@@ -1,0 +1,210 @@
+versioninfo
+{
+	"editorversion" "400"
+	"editorbuild" "5454"
+	"mapversion" "8"
+	"formatversion" "100"
+	"prefab" "0"
+}
+visgroups
+{
+}
+viewsettings
+{
+	"bSnapToGrid" "1"
+	"bShowGrid" "1"
+	"bShowLogicalGrid" "0"
+	"nGridSpacing" "8"
+	"bShow3DGrid" "0"
+}
+world
+{
+	"id" "1"
+	"mapversion" "8"
+	"classname" "worldspawn"
+	"detailmaterial" "detail/detailsprites"
+	"detailvbsp" "detail.vbsp"
+	"maxblobcount" "250"
+	"maxpropscreenwidth" "-1"
+	"skyname" "sky_black_nofog"
+}
+entity
+{
+	"id" "192"
+	"classname" "func_instance_parms"
+	"parm1" "$parent string"
+	connections
+	{
+		"OnProxyRelay" "ToggleNowTrigger0-1"
+		"OnProxyRelay" "LockTrigger0-1"
+		"OnProxyRelay" "UnLockTrigger0-1"
+	}
+	"origin" "0 0 32"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 1500]"
+	}
+}
+entity
+{
+	"id" "129"
+	"classname" "logic_relay"
+	"targetname" "Lock"
+	connections
+	{
+		"OnTrigger" "toggleButtonLock0-1"
+	}
+	"origin" "0 0 24"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 0]"
+	}
+}
+entity
+{
+	"id" "169"
+	"classname" "logic_relay"
+	"targetname" "UnLock"
+	connections
+	{
+		"OnTrigger" "toggleButtonUnLock0-1"
+	}
+	"origin" "0 0 24"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 0]"
+	}
+}
+entity
+{
+	"id" "173"
+	"classname" "logic_relay"
+	"targetname" "ToggleNow"
+	connections
+	{
+		"OnTrigger" "buttonComparerToggleTest0-1"
+	}
+	"origin" "0 0 24"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 0]"
+	}
+}
+entity
+{
+	"id" "2"
+	"classname" "prop_button"
+	"angles" "0 0 0"
+	"Delay" "0"
+	"parentname" "$parent"
+	"preventfastreset" "0"
+	"skin" "0"
+	"targetname" "toggleButton"
+	connections
+	{
+		"OnPressed" "buttonComparerToggleTest0-1"
+	}
+	"origin" "0 0 0"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 0]"
+	}
+}
+entity
+{
+	"id" "4"
+	"classname" "logic_branch"
+	"targetname" "buttonComparer"
+	connections
+	{
+		"OnTrue" "OnTurnOnTrigger0-1"
+		"OnFalse" "OnTurnOffTrigger0-1"
+	}
+	"origin" "0 0 24"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 500]"
+	}
+}
+entity
+{
+	"id" "10"
+	"classname" "func_instance_io_proxy"
+	"targetname" "proxy"
+	connections
+	{
+		"OnProxyRelay" "ToggleNowTrigger0-1"
+		"OnProxyRelay" "LockTrigger0-1"
+		"OnProxyRelay" "UnLockTrigger0-1"
+	}
+	"origin" "0 0 24"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 1500]"
+	}
+}
+entity
+{
+	"id" "83"
+	"classname" "logic_relay"
+	"targetname" "OnTurnOn"
+	connections
+	{
+		"OnTrigger" "proxyProxyRelay0-1"
+	}
+	"origin" "0 0 24"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 1000]"
+	}
+}
+entity
+{
+	"id" "91"
+	"classname" "logic_relay"
+	"targetname" "OnTurnOff"
+	connections
+	{
+		"OnTrigger" "proxyProxyRelay0-1"
+	}
+	"origin" "0 0 24"
+	editor
+	{
+		"color" "220 30 220"
+		"visgroupshown" "1"
+		"visgroupautoshown" "1"
+		"logicalpos" "[0 1000]"
+	}
+}
+cameras
+{
+	"activecamera" "-1"
+}
+cordons
+{
+	"active" "0"
+}
