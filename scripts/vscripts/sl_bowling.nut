@@ -1,294 +1,327 @@
-Shot <- 0;
-PinsDown <- [false, false, false, false, false, false, false, false, false, false];
-CurrentFrame <- 0;
-DownedPerFrame <- [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; 
-Game <- false;
+class GameClass {
+	// This class stores data for each game, and handles score calculation.
+	// Works only with standard 10-pin bowling. Heh.
+	constructor() {
+		Frame = -1;
+		Shot = -1;
+		ShotData = [];
+	}
+	
+	function NextFrame() {
+		if((Frame+1) > 9) return;
+		++Frame;
+		Shot = -1;
+		ShotData.push([]);
+		NextShot();
+	}
+	
+	function NextShot() {
+		if (((Shot+1) > 1 && Frame < 9) || ((Shot+1) > 2 && Frame == 9)) return;
+		ShotData.top().push(ShotClass());
+		++Shot;
+	}
+	
+	function GetCurrShot() {
+		return ShotData.top().top();
+	}
+	
+	function GetCurrFrameDowned() {
+		local ret = 0;
+		foreach(val in ShotData.top())
+			ret += val.NumDowned();
+		return ret;
+	}
+	
+	function GetFrameDowned(ix) {
+		if(ix >= ShotData.len()) return 0;
+		local ret = 0;
+		foreach(val in ShotData[ix])
+			ret += val.NumDowned();
+		return ret;
+	}
+	
+	function GetShotDowned(ix, iy) {
+		if(ix >= ShotData.len()) return 0;
+		if(iy >= ShotData[ix].len()) return 0;
+		return ShotData[ix][iy].NumDowned();
+	}
+	
+	function IsStrike(ix) {
+		if(ix >= ShotData.len()) return false;
+		if(ShotData[ix].len() != 1) return false;
+		return ShotData[ix][0].NumDowned() >= 10;
+	}
+	
+	function CalculateScore() {
+		local score = 0;
+		for(local ix = 0; ix < ShotData.len() && ix < 10; ++ix) {
+			local val = ShotData[ix];
+			local fscore = 0;
+			foreach(wal in val) fscore += wal.NumDowned();
+			score += fscore;
+			if(ix < 9 && fscore >= 10) { // bonuses galore
+				if(val.len() == 1) { // Strike
+					local iy = GetShotDowned(ix + 1, 0);
+					score += iy + ((ix == 8 || iy < 10) ? GetShotDowned(ix + 1, 1) : GetShotDowned(ix + 2, 0));
+				} else if(val.len() == 2) { // Spare
+					score += GetShotDowned(ix + 1, 0);
+				}
+			}
+		}
+		return score;
+	}
+	
+	Frame = null;
+	Shot = null;
+	ShotData = null;
+	ShotClass = class {
+		// This class simply stores data for each shot.
+		constructor() {
+			PinsDowned = [false, false, false, false, false, false, false, false, false, false];
+		}
+		
+		function DownPin(number) {
+			if (number < 0 || number > 9)
+				return;
+			PinsDowned[number] = true;
+		}
+		
+		function IsDowned(number) {
+			return PinsDowned[number];
+		}
+		
+		function IsAllDowned() {
+			local ret = true;
+			foreach(val in PinsDowned)
+				ret = ret && val;
+			return ret;
+		}
+		
+		function NumDowned() {
+			local ret = 0;
+			foreach(val in PinsDowned)
+				if(val) ++ret;
+			return ret;
+		}
+		
+		PinsDowned = null;
+	}
+}
+
+
+
+// Functions prefixed by On are called from the map by controller;RunScriptCode.
+// Functions prefixed by C are EntFire helpers that do things like show text.
+// Functions prefixed by L do logic or things that otherwise would be repeated if in On
+InGame <- false;
+BallInPlay <- true;
+Game <- null;
 DropDelay <- 1;
 
-function MapStart()
-{
-	EntFire("hint_NewGame", "ShowHint");
-	//EntFire("hint_ShowScore", "ShowHint");
-	EntFire("paint_stick", "Paint");
+function F(targetname, input, delay = 0, params = "") {
+	EntFire(targetname, input, params, delay);
 }
 
-function NewGame()
-{
-	AllowControl(false);
-	EntFire("hint_NewGame", "EndHint");
-	EntFire("hint_EndRound", "ShowHint");
-	Shot = 0;
-	PinsDown = [false, false, false, false, false, false, false, false, false, false];
-	CurrentFrame = 0;
-	DownedPerFrame = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-	Game = true;
-	NewFrame();
-	ShowText("Frame " + (CurrentFrame+1), DropDelay);
+// Begin On functions
+function OnMapSpawn() {
+	F("paint_stick", "Paint");
+	F("open_dialogue", "PlaySound", 1);
+	CShowNewGameHint();
 }
 
-function NewFrame()
-{
-	if(!Game) return;
-	Debug("NewFrame()");
-	DissolveAllPins();
-	PinsDown = [false, false, false, false, false, false, false, false, false, false];
-	Start4SecTimer(0.01);
-	DropBall(DropDelay); // drop ball
-	EntFire("pins_maker", "ForceSpawn", "", DropDelay); // spawn turrets
-	ResetCheckbox();
-	EntFire("fizzler_AlleyBlocker", "Disable", "", DropDelay);
-	AllowControl(true, DropDelay+ 0.01);
+function OnBallGutter() {
+	if(!InGame || !BallInPlay) return;
+	BallInPlay = false;
+	CSetAlleyFizzler(true);
+	CBeginTimer();
+	CRunScriptAfter("LBallDown(\"Gutter! \")", DropDelay);
 }
 
-function Debug(add)
-{
-	SendToConsole("echo \"[" + add + "] Frame " + CurrentFrame + " Shot " + Shot + " DPF " + DTFDebug() + "\"");
+function OnBallIn() {
+	if(!InGame) return;
+	CSetAlleyFizzler(true);
 }
 
-function BallIn()
-{
-	if(!Game) return;
-	EntFire("fizzler_AlleyBlocker", "Enable"); // turn on fizzler
+function OnBallDown() {
+	if(!InGame || !BallInPlay) return;
+	BallInPlay = false;
+	CSetAlleyFizzler(true);
+	CBeginTimer();
+	CRunScriptAfter("LBallDown()", DropDelay);
 }
 
-function DissolvePin(number)
-{
-	EntFire("dissolver", "Dissolve", "pin"+number);
+function OnPinDown(n) {
+	if(!InGame || Game.GetCurrShot().IsDowned(n)) return;
+	print(format("Pin %d downed!\n", n));
+	Game.GetCurrShot().DownPin(n);
+	CDissolvePin(n);
+	CSetCheckbox(n, true);
 }
 
-function DissolveAllPins()
-{
-	for(local i = 1; i < 11; i += 1)
-	{
-		DissolvePin(i);
-	}
+function OnScorePressed() {
+	CShowText(format("Score: %d", (Game == null ? 0 : Game.CalculateScore())));
 }
 
-function ResetCheckbox()
-{
-	for(local i = 1; i < 11; i += 1)
-	{
-		EntFire("pin" +i+ "fall-display", "Uncheck");
-	}
-}
-
-function Hack()
-{
-	for(local i = 1; i < 11; i += 1)
-	{
-		PinDown(i);
-	}
-}
-
-function PinDown(number)
-{
-	if(!Game) return;
-	if(IsDown(number)) return;
-	DissolvePin(number);
-	PinsDown[number-1] = true;
-	EntFire("pin" +number+ "fall-display", "Check");
-	// ShowText("Pin " + number + " down!");
-}
-
-function ShowText(text, delay = 0)
-{
-	EntFire("text", "SetText", text+"", delay);
-	EntFire("text", "Display", "", delay + 0.01);
-}
-
-function NumPinsDown()
-{
-	local r = 0;
-	for(local i = 0; i < 10; i += 1)
-	{
-		if(PinsDown[i]) r += 1;
-	}
-	return r;
-}
-
-function FrameNumPinsDown()
-{
-	local ix = CurrentFrame * 2 + Shot; // frame 0 shot 1
-	local r = DownedPerFrame[ix]; // 1
-	for(local iy = 1; iy <= Shot; iy+=1) 
-		r += DownedPerFrame[ix-iy];
-	return r;
-}
-
-function IsDown(number)
-{
-	return PinsDown[number-1];
-}
-
-function RunScriptAfter(code, delay)
-{
-	EntFire("controller", "RunScriptCode", code, delay);
-}
-
-function TriggerBallGutter()
-{
-	Start4SecTimer();
-	BallIn();
-	RunScriptAfter("BallGutter()", DropDelay);
-}
-
-function TriggerBallDown()
-{
-	Start4SecTimer();
-	RunScriptAfter("BallDown()", DropDelay);
-}
-
-function BallGutter()
-{
-	if(!Game) return;
-		
-	BallDown(true, true);
-}
-
-function BallDown(showtext = true, gutter = false)
-{
-	if(!Game) return;
-	AllowControl(false);
-	
-	// if (First Shot && Strike) || (Second Shot && not frame 10) || (Second Shot && Frame 10 && No Spare/Strike) || Third Shot) End
-	Debug("BallDown()");
-	DoScore();
-	if((Shot == 0 && CurrentFrame != 9) && NumPinsDown() == 10) { if(showtext) ShowText("Strike! Score: " + CalculateScore()); EndFrame(false); }
-	else if(Shot == 2 && CurrentFrame == 9 && NumPinsDown() == 10) { if(showtext) ShowText("Strike! Score: " + CalculateScore()); EndFrame(false); }
-	else if((Shot == 1 && (CurrentFrame != 9 || (CurrentFrame == 9 && (DownedPerFrame[18] + DownedPerFrame[19]) < 10))) || Shot >= 2) EndFrame(showtext, gutter);
-	else if(CurrentFrame == 9 && Shot < 2 && NumPinsDown() == 10) { if(showtext) ShowText("Strike! Score: " + CalculateScore()); Shot += 1; NewFrame();  }
-	// else -> First Shot
-	else { 
-		Shot += 1;
-		DropBall(); 
-		if(showtext && (NumPinsDown() >= 0 || !gutter)) ShowText(NumPinsDown() + " pins downed. Score: " + CalculateScore());
-		else if(showtext && gutter && NumPinsDown() == 0) { ShowText("Gutter! Score: " + CalculateScore()); }
-		//PinsDown = [false, false, false, false, false, false, false, false, false, false];
-		EntFire("fizzler_AlleyBlocker", "Disable");
-		AllowControl(true);
-	}
-	
-}
-
-function EndFrame(showtext = true, gutter = false)
-{
-	if(!Game) return;
-	Debug("EndFrame()");
-	if(showtext) {
-		local n = FrameNumPinsDown();
-		if(gutter && NumPinsDown() == 0) { ShowText("Gutter! Score: " + CalculateScore()); }
-		else if(n == 10 && (CurrentFrame != 9 || (CurrentFrame == 9 && Shot == 1))) ShowText("Spare! Score: " + CalculateScore());
-		else ShowText(n + " pins downed this frame. Score: " + CalculateScore());
-	}
-	if(CurrentFrame == 9)
-	{
-		EndGame(); return;
-	}
-	CurrentFrame += 1;
-	Shot = 0;
-	NewFrame();
-	ShowText("Frame " + (CurrentFrame+1), DropDelay);
-}
-
-function EndGame()
-{
-	if(!Game) return;
-	local s = CalculateScore();
-	if(s == 117) ShowText("Game ended. SPARTAN-117. Post this on the forums. Easter Eggs~");
-	else if(s == 300) ShowText("Game ended. Amazing! Perfect game! Final score: " + s);
-	else if(s == 0) ShowText("Game ended. Amazing! Zero! Final score: " + s);
-	else ShowText("Game ended. Final score: " + s);
-	Game = false;
-	EntFire("hint_NewGame", "ShowHint");
-	EntFire("hint_EndRound", "EndHint");
-	DissolveAllPins();
-	AllowControl(true);
-}
-
-function DropBall(delay = 0)
-{
-	if(!Game) return;
-	EntFire("@cube_dropper", "Trigger", "", delay);
-}
-
-// it's DropDelay seconds now. rofl. 
-function Start4SecTimer(delay = 0)
-{
-	EntFire("timer_relay", "Trigger", "", delay);
-}
-
-function DoScore()
-{
-	local ix = CurrentFrame * 2 + Shot;
-	DownedPerFrame[ix] = NumPinsDown();
-	if(ix == 20 || (ix == 19 && DownedPerFrame[18] == 10)) return;
-	for(local iy = 1; iy <= Shot; iy+=1) 
-		DownedPerFrame[ix] -= DownedPerFrame[ix-iy];
-}
-
-function ControlPressed()
-{
-	if(Game) {
-		EntFire("@cube_dropper", "FireUser1");
-		EntFire("fizzler_AlleyBlocker", "Enable");
-		BallDown();
+function OnControlPressed() {
+	if(InGame) {
+		CFizzleBall();
+		OnBallDown();
 	} else {
-		NewGame();
+		LNewGame();
 	}
 }
+// End On functions
 
-function AllowControl(allow, delay = 0)
-{
-	if(allow) EntFire("button_EndRound", "UnLock", "", delay);
-	else EntFire("button_EndRound", "Lock", "", delay);
+// Begin C functions
+function CShowText(text = "", delay = 0) {
+	F("text", "SetText", delay, text + "");
+	F("text", "Display", delay + 0.01);
 }
 
-function DTFDebug()
-{
-	local r = "[";
-	local sep = "";
-	for(local ix = 0; ix < DownedPerFrame.len(); ix += 1)
-	{
-		r += sep + DownedPerFrame[ix];
-		sep = ", ";
+function CRunScriptAfter(code, delay) {
+	F("controller", "RunScriptCode", delay, code);
+}
+
+function CBeginTimer(delay = 0) {
+	F("timer_relay", "Trigger", delay);
+}
+
+function CDissolvePin(number, delay = 0) {
+	F("dissolver", "Dissolve", delay, format("pin%d", number));
+}
+
+function CDissolveAllPins(delay = 0) {
+	for(local ix = 0; ix < 10; ++ix)
+		CDissolvePin(ix, delay);
+}
+
+function CSetAlleyFizzler(state, delay = 0) {
+	F("fizzler_AlleyBlocker", state ? "Enable" : "Disable", delay);
+}
+
+function CSetCheckbox(number, state, delay = 0) {
+	F(format("pin%dfall-display", number), state ? "Check" : "Uncheck", delay);
+}
+
+function CResetCheckbox(delay = 0) {
+	for(local ix = 0; ix < 10; ++ix) 
+		CSetCheckbox(ix, false, delay);
+}
+
+function CShowNewGameHint() {
+	F("hint_EndRound", "EndHint");
+	F("hint_NewGame", "ShowHint");	
+}
+
+function CShowEndRoundHint() {
+	F("hint_NewGame", "EndHint");
+	F("hint_EndRound", "ShowHint");
+}
+
+function CSpawnPins(delay = 0) {
+	F("pins_maker", "ForceSpawn", delay);
+}
+
+function CAllowControl(state, delay = 0) {
+	F("button_EndRound", state ? "UnLock" : "Lock", delay);
+}
+
+function CDropBall(delay = 0) {
+	F("@cube_dropper", "Trigger", delay);
+}
+
+function CFizzleBall(delay = 0) {
+	F("@cube_dropper", "FireUser1", delay);
+}
+
+function CVictory() {
+	F("victory_dialogue", "PlaySound");
+	F("victorypanel_open", "Trigger");
+}
+// End C functions
+
+// Begin L functions
+function LNewGame() {
+	CAllowControl(false);
+	CShowEndRoundHint();
+	Game = GameClass();
+	InGame = true;
+	LNewFrame();
+}
+
+function LNewFrame(bonus = false) {
+	CAllowControl(false);
+	CDissolveAllPins();
+	if(!bonus) Game.NextFrame();
+	else Game.NextShot();
+	CResetCheckbox();
+	CShowText(format("Frame %d Shot %d. Score: %d", Game.Frame + 1, Game.Shot + 1, Game.CalculateScore()), DropDelay + 1);
+	CBeginTimer(0.01);
+	CSpawnPins(DropDelay);
+	BallInPlay = true;
+	CDropBall(DropDelay);
+	CSetAlleyFizzler(false, DropDelay);
+	CAllowControl(true, DropDelay + 0.01);
+}
+
+function LNewShot() {
+	Game.NextShot();
+	BallInPlay = true;
+	CShowText(format("Frame %d Shot %d. Score: %d", Game.Frame + 1, Game.Shot + 1, Game.CalculateScore()), DropDelay + 1);
+	CDropBall();
+	CSetAlleyFizzler(false);
+	CAllowControl(true);
+}
+
+function LBallDown(stext = "") {
+	BallInPlay = false;
+	CAllowControl(false);
+	if(Game.GetCurrFrameDowned() == 10) {
+		if(Game.Shot == 0 || (Game.Shot >= 1 && Game.Frame >= 9 && Game.GetShotDowned(9, Game.Shot - 1) == 10)) stext = "Strike! ";
+		else if(Game.Shot == 1) stext = "Spare! ";
 	}
-	r += "]";
-	return r;
+	local text = format("%sThis shot: %d pin(s). This frame: %d pin(s).", stext, Game.GetCurrShot().NumDowned(), Game.GetCurrFrameDowned(), Game.CalculateScore());
+	CShowText(text);
+	if(Game.GetCurrFrameDowned() == 10 || (Game.Frame == 9 && Game.GetShotDowned(9, Game.Shot) == 10)) {
+		if(Game.Frame == 9) {
+			if(Game.Shot == 2) LEndGame();
+			else LNewFrame(true);
+		} else LNewFrame();
+	} else if(Game.Frame == 9 && Game.Shot == 1) LEndGame();
+	else if(Game.Shot == 1) LNewFrame();
+	else if(Game.Shot == 0) LNewShot();
 }
 
-function CalculateScore()
-{
-	local r = 0;
-	for(local ix = 0; ix < DownedPerFrame.len(); ix+= 1)
-	{
-		local c = DownedPerFrame[ix];
-		r += c;
-		if((ix % 2 == 0) && c >= 10 && ix < 18) {
-			if(ix < 16) {
-				local d = DownedPerFrame[ix + 2];
-				r += d;
-				if(d == 10) {
-					local e = DownedPerFrame[ix + 4];
-					r += e;
-				} else {
-					local e = DownedPerFrame[ix + 3];
-					r += e;
-				}
-			} else if(ix == 16)
-			{
-				r += DownedPerFrame[ix + 2] + DownedPerFrame[ix + 3];
-			}
-			ix += 1;
-		}
-		else if((ix % 2) == 1 && (c+DownedPerFrame[ix-1])>=10 && ix < 18)
-		{
-			r += DownedPerFrame[ix+1];
-		}
-	}
-	return r;
+function LEndGame() {
+	local stext = "";
+	local s = Game.CalculateScore();
+	if(s == 300) {
+		CVictory();
+		CShowNewGameHint();
+		CFizzleBall();
+		CSetAlleyFizzler(false);
+		CDissolveAllPins();
+		CResetCheckbox();
+		InGame = false;
+		CAllowControl(false);
+		CShowText(format("Game ended. Final score: 300. Please enter the doorway.", stext, s), 1.5);
+		return;
+	} else if(s == 117) stext = "Master Chief Petty Officer of the Navy. ";
+	else if(s == 0) stext = "Amazing! Zero! ";
+	CShowNewGameHint();
+	CFizzleBall();
+	CSetAlleyFizzler(true);
+	CDissolveAllPins();
+	CResetCheckbox();
+	InGame = false;
+	CAllowControl(true);
+	CShowText(format("Game ended. %sFinal score: %d", stext, s), 1.5);
 }
 
-function ScorePressed()
-{
-	ShowText("Score: " + CalculateScore());
+function LHack() {
+	for(local ix = 0; ix < 10; ++ix)
+		OnPinDown(ix);
+	CFizzleBall();
+	OnBallDown();
 }
+// End L functions
