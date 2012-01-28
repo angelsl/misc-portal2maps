@@ -276,13 +276,13 @@ function LNewShot() {
 function LBallDown(stext = "") {
 	BallInPlay = false;
 	CAllowControl(false);
-	if(Game.GetCurrFrameDowned() == 10) {
-		if(Game.Shot == 0 || (Game.Shot >= 1 && Game.Frame >= 9 && Game.GetShotDowned(9, Game.Shot - 1) == 10)) stext = "Strike! ";
+	if(Game.GetCurrFrameDowned() >= 10) {
+		if(Game.Shot == 0 || (Game.Shot >= 1 && Game.Frame >= 9 && Game.GetShotDowned(9, Game.Shot) >= 10)) stext = "Strike! ";
 		else if(Game.Shot == 1) stext = "Spare! ";
 	}
 	local text = format("%sThis shot: %d pin(s). This frame: %d pin(s).", stext, Game.GetCurrShot().NumDowned(), Game.GetCurrFrameDowned(), Game.CalculateScore());
 	CShowText(text);
-	if(Game.GetCurrFrameDowned() == 10 || (Game.Frame == 9 && Game.GetShotDowned(9, Game.Shot) == 10)) {
+	if(Game.GetCurrFrameDowned() >= 10 || (Game.Frame == 9 && Game.GetShotDowned(9, Game.Shot) >= 10)) {
 		if(Game.Frame == 9) {
 			if(Game.Shot == 2) LEndGame();
 			else LNewFrame(true);
