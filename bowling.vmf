@@ -2,7 +2,7 @@ versioninfo
 {
 	"editorversion" "400"
 	"editorbuild" "5454"
-	"mapversion" "390"
+	"mapversion" "401"
 	"formatversion" "100"
 	"prefab" "0"
 }
@@ -20,7 +20,7 @@ viewsettings
 world
 {
 	"id" "1"
-	"mapversion" "390"
+	"mapversion" "401"
 	"classname" "worldspawn"
 	"detailmaterial" "detail/detailsprites"
 	"detailvbsp" "detail.vbsp"
@@ -3943,7 +3943,7 @@ entity
 	{
 		"OnMapSpawn" "controllerRunScriptCodeMapStart()0-1"
 	}
-	"origin" "790.734 310.307 97"
+	"origin" "848 312 72"
 	editor
 	{
 		"color" "220 30 220"
@@ -3960,14 +3960,14 @@ entity
 	"Gagged" "1"
 	"PickupEnabled" "0"
 	"spawnflags" "128"
-	"targetname" "pin1"
+	"targetname" "pin0"
 	"TurretRange" "1512"
 	"UsedAsActor" "0"
 	"UseSuperDamageScale" "1"
 	connections
 	{
-		"OnUser1" "controllerRunScriptCodePinDown(1)0-1"
-		"OnTipped" "pin1FireUser10-1"
+		"OnUser1" "controllerRunScriptCodeOn::PinDown(0)0-1"
+		"OnTipped" "pin0FireUser10-1"
 	}
 	"origin" "576 -704 64"
 	editor
@@ -3986,14 +3986,14 @@ entity
 	"Gagged" "1"
 	"PickupEnabled" "0"
 	"spawnflags" "128"
-	"targetname" "pin3"
+	"targetname" "pin2"
 	"TurretRange" "1512"
 	"UsedAsActor" "0"
 	"UseSuperDamageScale" "1"
 	connections
 	{
-		"OnUser1" "controllerRunScriptCodePinDown(3)0-1"
-		"OnTipped" "pin3FireUser10-1"
+		"OnUser1" "controllerRunScriptCodeOn::PinDown(2)0-1"
+		"OnTipped" "pin2FireUser10-1"
 	}
 	"origin" "544 -768 64"
 	editor
@@ -4012,14 +4012,14 @@ entity
 	"Gagged" "1"
 	"PickupEnabled" "0"
 	"spawnflags" "128"
-	"targetname" "pin2"
+	"targetname" "pin1"
 	"TurretRange" "1512"
 	"UsedAsActor" "0"
 	"UseSuperDamageScale" "1"
 	connections
 	{
-		"OnUser1" "controllerRunScriptCodePinDown(2)0-1"
-		"OnTipped" "pin2FireUser10-1"
+		"OnUser1" "controllerRunScriptCodeOn::PinDown(1)0-1"
+		"OnTipped" "pin1FireUser10-1"
 	}
 	"origin" "608 -768 64"
 	editor
@@ -4038,14 +4038,14 @@ entity
 	"Gagged" "1"
 	"PickupEnabled" "0"
 	"spawnflags" "128"
-	"targetname" "pin4"
+	"targetname" "pin3"
 	"TurretRange" "1512"
 	"UsedAsActor" "0"
 	"UseSuperDamageScale" "1"
 	connections
 	{
-		"OnUser1" "controllerRunScriptCodePinDown(4)0-1"
-		"OnTipped" "pin4FireUser10-1"
+		"OnUser1" "controllerRunScriptCodeOn::PinDown(3)0-1"
+		"OnTipped" "pin3FireUser10-1"
 	}
 	"origin" "640 -832 64"
 	editor
@@ -4064,14 +4064,14 @@ entity
 	"Gagged" "1"
 	"PickupEnabled" "0"
 	"spawnflags" "128"
-	"targetname" "pin5"
+	"targetname" "pin4"
 	"TurretRange" "1512"
 	"UsedAsActor" "0"
 	"UseSuperDamageScale" "1"
 	connections
 	{
-		"OnUser1" "controllerRunScriptCodePinDown(5)0-1"
-		"OnTipped" "pin5FireUser10-1"
+		"OnUser1" "controllerRunScriptCodeOn::PinDown(4)0-1"
+		"OnTipped" "pin4FireUser10-1"
 	}
 	"origin" "576 -832 64"
 	editor
@@ -4090,14 +4090,14 @@ entity
 	"Gagged" "1"
 	"PickupEnabled" "0"
 	"spawnflags" "128"
-	"targetname" "pin6"
+	"targetname" "pin5"
 	"TurretRange" "1512"
 	"UsedAsActor" "0"
 	"UseSuperDamageScale" "1"
 	connections
 	{
-		"OnUser1" "controllerRunScriptCodePinDown(6)0-1"
-		"OnTipped" "pin6FireUser10-1"
+		"OnUser1" "controllerRunScriptCodeOn::PinDown(5)0-1"
+		"OnTipped" "pin5FireUser10-1"
 	}
 	"origin" "512 -832 64"
 	editor
@@ -4116,14 +4116,14 @@ entity
 	"Gagged" "1"
 	"PickupEnabled" "0"
 	"spawnflags" "128"
-	"targetname" "pin10"
+	"targetname" "pin9"
 	"TurretRange" "1512"
 	"UsedAsActor" "0"
 	"UseSuperDamageScale" "1"
 	connections
 	{
-		"OnUser1" "controllerRunScriptCodePinDown(10)0-1"
-		"OnTipped" "pin10FireUser10-1"
+		"OnUser1" "controllerRunScriptCodeOn::PinDown(9)0-1"
+		"OnTipped" "pin9FireUser10-1"
 	}
 	"origin" "480 -896 64"
 	editor
@@ -4142,14 +4142,14 @@ entity
 	"Gagged" "1"
 	"PickupEnabled" "0"
 	"spawnflags" "128"
-	"targetname" "pin9"
+	"targetname" "pin8"
 	"TurretRange" "1512"
 	"UsedAsActor" "0"
 	"UseSuperDamageScale" "1"
 	connections
 	{
-		"OnUser1" "controllerRunScriptCodePinDown(9)0-1"
-		"OnTipped" "pin9FireUser10-1"
+		"OnUser1" "controllerRunScriptCodeOn::PinDown(8)0-1"
+		"OnTipped" "pin8FireUser10-1"
 	}
 	"origin" "544 -896 64"
 	editor
@@ -4168,14 +4168,14 @@ entity
 	"Gagged" "1"
 	"PickupEnabled" "0"
 	"spawnflags" "128"
-	"targetname" "pin8"
+	"targetname" "pin7"
 	"TurretRange" "1512"
 	"UsedAsActor" "0"
 	"UseSuperDamageScale" "1"
 	connections
 	{
-		"OnUser1" "controllerRunScriptCodePinDown(8)0-1"
-		"OnTipped" "pin8FireUser10-1"
+		"OnUser1" "controllerRunScriptCodeOn::PinDown(7)0-1"
+		"OnTipped" "pin7FireUser10-1"
 	}
 	"origin" "608 -896 64"
 	editor
@@ -4194,14 +4194,14 @@ entity
 	"Gagged" "1"
 	"PickupEnabled" "0"
 	"spawnflags" "128"
-	"targetname" "pin7"
+	"targetname" "pin6"
 	"TurretRange" "1512"
 	"UsedAsActor" "0"
 	"UseSuperDamageScale" "1"
 	connections
 	{
-		"OnUser1" "controllerRunScriptCodePinDown(7)0-1"
-		"OnTipped" "pin7FireUser10-1"
+		"OnUser1" "controllerRunScriptCodeOn::PinDown(6)0-1"
+		"OnTipped" "pin6FireUser10-1"
 	}
 	"origin" "672 -896 64"
 	editor
@@ -4419,7 +4419,7 @@ entity
 	"classname" "logic_script"
 	"targetname" "controller"
 	"vscripts" "sl_bowling.nut"
-	"origin" "767.897 352.509 73"
+	"origin" "816 312 73"
 	editor
 	{
 		"color" "220 30 220"
@@ -4434,17 +4434,17 @@ entity
 	"classname" "point_template"
 	"spawnflags" "2"
 	"targetname" "pins_maker"
-	"Template01" "pin1"
-	"Template02" "pin2"
-	"Template03" "pin3"
-	"Template04" "pin4"
-	"Template05" "pin5"
-	"Template06" "pin6"
-	"Template07" "pin7"
-	"Template08" "pin8"
-	"Template09" "pin9"
-	"Template10" "pin10"
-	"origin" "543.602 -693.614 73"
+	"Template01" "pin0"
+	"Template02" "pin1"
+	"Template03" "pin2"
+	"Template04" "pin3"
+	"Template05" "pin4"
+	"Template06" "pin5"
+	"Template07" "pin6"
+	"Template08" "pin7"
+	"Template09" "pin8"
+	"Template10" "pin9"
+	"origin" "896 312 73"
 	editor
 	{
 		"color" "220 30 220"
@@ -4460,7 +4460,7 @@ entity
 	"dissolvetype" "Energy"
 	"magnitude" "250"
 	"targetname" "dissolver"
-	"origin" "514.653 -690.164 73"
+	"origin" "880 312 73"
 	editor
 	{
 		"color" "220 30 220"
@@ -4485,7 +4485,7 @@ entity
 	"targetname" "text"
 	"x" "-1"
 	"y" "0.2"
-	"origin" "484.428 -689.029 73"
+	"origin" "864 312 73"
 	editor
 	{
 		"color" "220 30 220"
@@ -4521,7 +4521,7 @@ entity
 	"file" "instances/user/indicatortime.vmf"
 	"fixup_style" "0"
 	"replace01" "$parent"
-	"replace02" "$time 2"
+	"replace02" "$time 1"
 	"targetname" "timer"
 	"origin" "768 288 68"
 	editor
@@ -4544,7 +4544,7 @@ entity
 		"OnTrigger" "ticktock_playerEnable0-1"
 		"OnTrigger" "ticktock_playerDisable1-1"
 	}
-	"origin" "848.682 327.76 73"
+	"origin" "768 312 73"
 	editor
 	{
 		"color" "220 30 220"
@@ -4564,7 +4564,7 @@ entity
 	"radius" "1250"
 	"spawnflags" "48"
 	"targetname" "ticktock"
-	"origin" "834.087 329.593 73"
+	"origin" "784 312 73"
 	editor
 	{
 		"color" "220 30 220"
@@ -4585,33 +4585,13 @@ entity
 	{
 		"OnTimer" "ticktockPlaySound0-1"
 	}
-	"origin" "805.162 330.189 73"
+	"origin" "800 312 73"
 	editor
 	{
 		"color" "220 30 220"
 		"visgroupshown" "1"
 		"visgroupautoshown" "1"
 		"logicalpos" "[0 12000]"
-	}
-}
-entity
-{
-	"id" "4909"
-	"classname" "logic_relay"
-	"targetname" "hack"
-	connections
-	{
-		"OnTrigger" "controllerRunScriptCodeHack()0.1-1"
-		"OnTrigger" "fizzler_BallCatcherFireUser10.2-1"
-		"OnTrigger" "controllerRunScriptCodeBallIn()0-1"
-	}
-	"origin" "291.425 -950.642 73"
-	editor
-	{
-		"color" "220 30 220"
-		"visgroupshown" "1"
-		"visgroupautoshown" "1"
-		"logicalpos" "[0 12500]"
 	}
 }
 entity
@@ -4925,7 +4905,7 @@ entity
 	"SourceEntityName" "afp_model"
 	"spawnflags" "48"
 	"targetname" "afp_sound"
-	"origin" "834.087 345.593 73"
+	"origin" "832 312 73"
 	editor
 	{
 		"color" "220 30 220"
@@ -4962,7 +4942,7 @@ entity
 	"fixup_style" "0"
 	"replace01" "$parent ???"
 	"replace02" "$time ???"
-	"targetname" "pin1fall"
+	"targetname" "pin0fall"
 	"origin" "576 -1148 280"
 	editor
 	{
@@ -4981,7 +4961,7 @@ entity
 	"fixup_style" "0"
 	"replace01" "$parent ???"
 	"replace02" "$time ???"
-	"targetname" "pin2fall"
+	"targetname" "pin1fall"
 	"origin" "600 -1148 328"
 	editor
 	{
@@ -5000,7 +4980,7 @@ entity
 	"fixup_style" "0"
 	"replace01" "$parent ???"
 	"replace02" "$time ???"
-	"targetname" "pin3fall"
+	"targetname" "pin2fall"
 	"origin" "552 -1148 328"
 	editor
 	{
@@ -5019,7 +4999,7 @@ entity
 	"fixup_style" "0"
 	"replace01" "$parent ???"
 	"replace02" "$time ???"
-	"targetname" "pin6fall"
+	"targetname" "pin5fall"
 	"origin" "528 -1148 376"
 	editor
 	{
@@ -5038,7 +5018,7 @@ entity
 	"fixup_style" "0"
 	"replace01" "$parent ???"
 	"replace02" "$time ???"
-	"targetname" "pin5fall"
+	"targetname" "pin4fall"
 	"origin" "576 -1148 376"
 	editor
 	{
@@ -5057,7 +5037,7 @@ entity
 	"fixup_style" "0"
 	"replace01" "$parent ???"
 	"replace02" "$time ???"
-	"targetname" "pin4fall"
+	"targetname" "pin3fall"
 	"origin" "624 -1148 376"
 	editor
 	{
@@ -5076,7 +5056,7 @@ entity
 	"fixup_style" "0"
 	"replace01" "$parent ???"
 	"replace02" "$time ???"
-	"targetname" "pin7fall"
+	"targetname" "pin6fall"
 	"origin" "648 -1148 424"
 	editor
 	{
@@ -5095,7 +5075,7 @@ entity
 	"fixup_style" "0"
 	"replace01" "$parent ???"
 	"replace02" "$time ???"
-	"targetname" "pin8fall"
+	"targetname" "pin7fall"
 	"origin" "600 -1148 424"
 	editor
 	{
@@ -5114,7 +5094,7 @@ entity
 	"fixup_style" "0"
 	"replace01" "$parent ???"
 	"replace02" "$time ???"
-	"targetname" "pin9fall"
+	"targetname" "pin8fall"
 	"origin" "552 -1148 424"
 	editor
 	{
@@ -5133,7 +5113,7 @@ entity
 	"fixup_style" "0"
 	"replace01" "$parent ???"
 	"replace02" "$time ???"
-	"targetname" "pin10fall"
+	"targetname" "pin9fall"
 	"origin" "504 -1148 424"
 	editor
 	{
@@ -6310,7 +6290,7 @@ entity
 	"filterclass" "prop_weighted_cube"
 	"Negated" "Allow entities that match criteria"
 	"targetname" "filter_sphere"
-	"origin" "821.688 310.586 73"
+	"origin" "736 312 73"
 	editor
 	{
 		"color" "220 30 220"
@@ -6326,7 +6306,7 @@ entity
 	"filterclass" "npc_portal_turret_floor"
 	"Negated" "Allow entities that match criteria"
 	"targetname" "filter_turret"
-	"origin" "853.688 310.586 73"
+	"origin" "752 312 73"
 	editor
 	{
 		"color" "220 30 220"
@@ -6426,7 +6406,7 @@ entity
 	"CanFirePortal2" "1"
 	"fademindist" "-1"
 	"fadescale" "1"
-	"origin" "576.179 396.533 67.7958"
+	"origin" "576 396.533 64"
 	editor
 	{
 		"color" "0 0 200"
